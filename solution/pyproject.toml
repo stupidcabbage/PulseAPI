@@ -1,0 +1,27 @@
+[tool.poetry]
+name = "stupidcabbage-fastapi"
+version = "0.1.0"
+description = "PROD v2: Pulse Backend"
+authors = ["stupidcabbage <vanya@gutche.ru>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "3.12.1"
+uvicorn = "^0.27.1"
+fastapi = "^0.110.0"
+pydantic = "^2.6.2"
+isort = "^5.13.2"
+python-jose = {extras = ["cryptography"], version = "^3.3.0"}
+passlib = {extras = ["bcrypt"], version = "^1.7.4"}
+sqlalchemy = {extras = ["asyncio"], version = "^2.0.27"}
+alembic = "^1.13.1"
+
+
+[tool.poetry.group.dev.dependencies]
+flask = "^3.0.2"
+ruff = "^0.2.2"
+flake8 = "^7.0.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
