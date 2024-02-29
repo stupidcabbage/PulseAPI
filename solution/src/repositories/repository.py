@@ -51,6 +51,16 @@ class SQLAlchemyRepository(AbstractRepository):
         res = await self.session.execute(stmt)
         res = [row[0].to_read_model() for row in res.all()]
         return res
+    
+    async def get_where(self, data: dict):
+        stmt = select(self.model)
+        for k, v in data.items():
+            stmt = stmt.where(getattr(self.model, k) == v)
+        res = await self.session.scalar(stmt)
+        if res:
+            return res.to_read_model()
+        else:
+            return None
 
     async def find_one(self, **filter_by):
         stmt = select(self.model).filter_by(**filter_by)

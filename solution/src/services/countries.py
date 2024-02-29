@@ -9,7 +9,12 @@ class CountriesService:
             countries = await uow.countries.find_all()
             return countries 
 
-    async def get_countries_by_region(self, uow: IUnitOfWork, region: str) -> Sequence[CountrySchema]:
+    async def get_countries_by(self, uow: IUnitOfWork, data: dict[str, str]) -> Sequence[CountrySchema]:
         async with uow:
-            country = await uow.countries.find_where(data={"region": region})
+            countries = await uow.countries.find_where(data=data)
+            return countries
+
+    async def get_country_by(self, uow: IUnitOfWork, data: dict[str, str]) -> CountrySchema:
+        async with uow:
+            country = await uow.countries.get_where(data=data)
             return country
