@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 
-from sqlalchemy import insert
+from sqlalchemy import insert, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 
@@ -28,16 +28,32 @@ class SQLAlchemyRepository(AbstractRepository):
     def __init__(self, session: AsyncSession):
         self.session = session
 
-    async def add_one(self, data: dict):
-        stmt = insert(self.model).values(**data).returning(self.model)
-        res = await self.session.scalar(stmt)
+    async def add_one(self, data: dict) -> int:
+        stmt = insert(self.model).values(**data).returning(self.model.id)
+        res = await self.session.execute(stmt)
+        return res.scalar_one()
+
+    async def edit_one(self, id: int, data: dict) -> int:
+        stmt = update(self.model).values(**data).filter_by(id=id).returning(self.model.id)
+        res = await self.session.execute(stmt)
+        return res.scalar_one()
+    
+    async def find_all(self):
+        stmt = select(self.model)
+        res = await self.session.execute(stmt)
+        res = [row[0].to_read_model() for row in res.all()]
         return res
 
-    async def find_all(self):
-        ...
+    async def find_where(self, data: dict):
+        stmt = select(self.model)
+        for k, v in data.items():
+            stmt = stmt.where(getattr(self.model, k) == v)
+        res = await self.session.execute(stmt)
+        res = [row[0].to_read_model() for row in res.all()]
+        return res
 
-    async def find_one(self):
-        ...
-
-    async def edit_one(self):
-        ...
+    async def find_one(self, **filter_by):
+        stmt = select(self.model).filter_by(**filter_by)
+        res = await self.session.execute(stmt)
+        res = res.scalar_one().to_read_model()
+        return res
