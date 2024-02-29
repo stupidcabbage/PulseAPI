@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 
-from sqlalchemy import insert, select, update
+from sqlalchemy import desc, insert, or_, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 
@@ -37,17 +37,29 @@ class SQLAlchemyRepository(AbstractRepository):
         stmt = update(self.model).values(**data).filter_by(id=id).returning(self.model.id)
         res = await self.session.execute(stmt)
         return res.scalar_one()
-    
+
     async def find_all(self):
         stmt = select(self.model)
         res = await self.session.execute(stmt)
         res = [row[0].to_read_model() for row in res.all()]
         return res
 
-    async def find_where(self, data: dict):
+    async def find_where(self,
+                         data: dict,
+                         order_by: str | None = None,
+                         order_desc: bool = False):
         stmt = select(self.model)
         for k, v in data.items():
-            stmt = stmt.where(getattr(self.model, k) == v)
+            if isinstance(v, (tuple, list)):
+                for i in v:
+                    values = [getattr(self.model, k) == i for i in v]
+                    stmt = stmt.where(or_(*values))
+            else:
+                stmt = stmt.where(getattr(self.model, k) == v)
+
+        if order_by:
+            stmt = await self._order_by(stmt, order_by, order_desc)
+
         res = await self.session.execute(stmt)
         res = [row[0].to_read_model() for row in res.all()]
         return res
@@ -67,3 +79,8 @@ class SQLAlchemyRepository(AbstractRepository):
         res = await self.session.execute(stmt)
         res = res.scalar_one().to_read_model()
         return res
+
+    async def _order_by(self, stmt, value: str, _desc: bool = False):
+        if _desc:
+            return stmt.order_by(desc(getattr(self.model, value)))
+        return stmt.order_by(getattr(self.model, value))

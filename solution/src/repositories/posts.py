@@ -7,4 +7,4 @@ class PostsRepositories(SQLAlchemyRepository):
 
 
 class TagsRepositories(SQLAlchemyRepository):
-    model = Tag 
+    model = Tag

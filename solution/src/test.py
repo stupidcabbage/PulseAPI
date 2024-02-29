@@ -1,6 +1,6 @@
 import asyncio
 
-from sqlalchemy import select
+from sqlalchemy import or_, select
 from db.models.countries import Country
 
 from utils.unitofwork import UnitOfWork
@@ -14,11 +14,10 @@ async def test():
     session = async_session_maker()
     data = {"region": "asd"}
     async with session:
-        stmt = select(Country)
-        for k, v in data.items():
-            stmt = stmt.where(getattr(Country, k) == v)
-        res = await session.execute(stmt)
-        res = [row[0].to_read_model() for row in res.all()]
-        return res
+        regions = ["Africa", "Europe"]
+        values = [Country.region == regions[0], Country.region == regions[1]]
+        stmt = select(Country).where(or_(*values))
+        res = await session.scalars(stmt)
+        return res.all()
 
 print(asyncio.run(test()))

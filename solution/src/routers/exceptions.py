@@ -7,12 +7,15 @@ class AbstractException(Exception):
         self.reason = reason
         self.status_code = status_code
 
+
 class CountryDoesNotExists(AbstractException):
     def __init__(self):
         self.reason = "Подобный страны не существует."
         self.status_code = 404
 
+
 router = APIRouter()
+
 
 async def base_exception_handler(request: Request, exc: AbstractException):
     return JSONResponse(

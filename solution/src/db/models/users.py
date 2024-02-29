@@ -5,7 +5,6 @@ from sqlalchemy import ForeignKey, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from db.db import Base
-# from db.models.posts import Post
 
 
 class User(Base):

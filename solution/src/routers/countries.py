@@ -1,6 +1,6 @@
-from typing import Annotated, List
+from typing import Annotated
 
-from fastapi import APIRouter, Path
+from fastapi import APIRouter, Path, Query
 
 from schemas.countries import Countries, CountrySchema
 from services.countries import CountriesService
@@ -13,18 +13,20 @@ router = APIRouter(prefix="/countries",
 
 @router.get("", summary="Получить список стран")
 async def get_countries(uow: UOWDep,
-                        region: Countries = Countries.all_)-> List[CountrySchema]:
+                        region: Annotated[list[Countries], Query()] = [Countries.all_]
+) -> list[CountrySchema]:
     """
     Получение списка стран с возможной фильтрацией.\n
     Используется на странице регистрации для предоставления
     возможности выбора страны, к которой относится пользователь.\n
     Если никакие из фильтров не переданы, необходимо вернуть все страны.
     """
+    print(region)
     match region:
-        case Countries.all_:
+        case [Countries.all_]:
             countries = await CountriesService().get_countries(uow)
         case _:
-            countries = await CountriesService().get_countries_by(uow, {"region": region.value})
+            countries = await CountriesService().get_countries_by(uow, {"region": [i.value for i in region]})
     return countries
 
 

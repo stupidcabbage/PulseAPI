@@ -12,7 +12,7 @@ class IUnitOfWork(ABC):
     tags: Type[TagsRepositories]
     posts: Type[PostsRepositories]
     countries: Type[CountriesRepository]
-    
+
     @abstractmethod
     def __init__(self):
         ...
