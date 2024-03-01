@@ -21,12 +21,12 @@ async def get_countries(uow: UOWDep,
     возможности выбора страны, к которой относится пользователь.\n
     Если никакие из фильтров не переданы, необходимо вернуть все страны.
     """
-    print(region)
     match region:
         case [Countries.all_]:
             countries = await CountriesService().get_countries(uow)
         case _:
-            countries = await CountriesService().get_countries_by(uow, {"region": [i.value for i in region]})
+            countries = await CountriesService().get_countries_by(
+                    uow, {"region": [i.value for i in region]})
     return countries
 
 

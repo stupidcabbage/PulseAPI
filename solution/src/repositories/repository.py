@@ -1,7 +1,12 @@
 from abc import ABC, abstractmethod
 
-from sqlalchemy import desc, insert, or_, select, update
+from sqlalchemy import desc, func, insert, or_, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.exc import IntegrityError
+from asyncpg.exceptions import UniqueViolationError
+
+from repositories.excpetions import DBUniqueException
+from repositories.excpetions import BaseDBException
 
 
 class AbstractRepository(ABC):
@@ -28,10 +33,13 @@ class SQLAlchemyRepository(AbstractRepository):
     def __init__(self, session: AsyncSession):
         self.session = session
 
-    async def add_one(self, data: dict) -> int:
-        stmt = insert(self.model).values(**data).returning(self.model.id)
-        res = await self.session.execute(stmt)
-        return res.scalar_one()
+    async def add_one(self, data: dict) -> model:
+        try:
+            stmt = insert(self.model).values(**data).returning(self.model)
+            res = await self.session.execute(stmt)
+            return (res.scalar_one()).to_read_model()
+        except IntegrityError as error:
+            raise DBUniqueException(details=error.args)
 
     async def edit_one(self, id: int, data: dict) -> int:
         stmt = update(self.model).values(**data).filter_by(id=id).returning(self.model.id)
@@ -73,6 +81,19 @@ class SQLAlchemyRepository(AbstractRepository):
             return res.to_read_model()
         else:
             return None
+
+    async def is_exists(self, data: dict[str, list | str]):
+        stmt = select(func.count(self.model))
+        for k, v in data.items():
+            stmt = stmt.where(getattr(self.model, k) == v)
+        res = await self.session.scalar(stmt)
+        if res:
+            return res.to_read_model()
+        else:
+            return None
+    
+    def _generate_where_parametrs(self, data: dict[str, list | str]):
+        pass
 
     async def find_one(self, **filter_by):
         stmt = select(self.model).filter_by(**filter_by)
