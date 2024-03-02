@@ -17,9 +17,10 @@ class Friend(Base):
                                     autoincrement=True)
     added_user_login: Mapped[str] = mapped_column(ForeignKey("users.login"))
     who_added_user_login: Mapped[str] = mapped_column(ForeignKey("users.login"))
-    added_user: Mapped["User"] = relationship("User", backref="added_friends")
-    who_added_user: Mapped["User"] = relationship("User", back_populates="friends",
-                                                  backref="who_added_friends")
+    added_user: Mapped["User"] = relationship("User", foreign_keys=added_user_login)
+    who_added_user: Mapped["User"] = relationship("User",
+                                                  back_populates="friends",
+                                                  foreign_keys=who_added_user_login)
     added_at: Mapped[datetime] = mapped_column(insert_default=func.now())
     
     def to_read_model(self) -> FriendSchema:

@@ -10,17 +10,19 @@ class DBUniqueException(BaseDBException):
         self.details = details
 
 class DoesNotExistsException(BaseDBException):
-    def __init__(self, reason: str, details: str):
+    def __init__(self, reason: str, details: str, status_code: int):
         self.reason = reason
         self.details = details
+        self.status_code = status_code
 
 class CountryDoesNotExists(DoesNotExistsException):
     def __init__(self):
         self.reason = "Страна с указанным кодом не найдена."
         self.details = "None"
-
+        self.status_code = 401
 
 class UserDoesNotExists(DoesNotExistsException):
     def __init__(self):
         self.reason = "Пользователь с данным логином не найден."
         self.details = "None"
+        self.status_code = 404

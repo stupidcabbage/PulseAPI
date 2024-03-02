@@ -1,5 +1,5 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 class OKStatus(BaseModel):
-    status: str = "ok"
+    status: str = Field(default="ok")

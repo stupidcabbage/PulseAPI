@@ -23,7 +23,7 @@ async def base_exception_handler(request: Request, exc: BaseRouterException):
 
 async def doesnot_exists_handler(request: Request, exc: DoesNotExistsException):
     return JSONResponse(
-        status_code=exc.status_code,
+        status_code=401,
         content={"reason": exc.reason})
 
 

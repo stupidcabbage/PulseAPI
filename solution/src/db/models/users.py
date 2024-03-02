@@ -28,7 +28,10 @@ class User(Base):
                                               default=None)
     last_password_change: Mapped[datetime] = mapped_column(insert_default=func.now())
     posts: Mapped[List["Post"]] = relationship(back_populates="author")
-    friends: Mapped[List["Friend"]] = relationship(secondary="who_added_friends")
+    friends: Mapped[List["Friend"]] = relationship(
+            back_populates="who_added_user",
+            foreign_keys=Friend.who_added_user_login)
+                                                   
 
     def to_read_model(self) -> UserSchema:
         return FullUserSchema(

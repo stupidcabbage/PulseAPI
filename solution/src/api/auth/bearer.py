@@ -35,7 +35,7 @@ class JWTBearer(HTTPBearer):
             payload = None
         if payload:
             user = await UsersService().get_user(uow,
-                                                 {"id": payload.get("user_id")})
+                                                 {"login": payload.get("login")})
             if (payload["expires"] and payload["expires"] >= time.time()
                 and payload["created_at"] and payload["created_at"] > user.last_password_change.timestamp()):
                 return user

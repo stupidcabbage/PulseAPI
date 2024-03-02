@@ -46,7 +46,7 @@ class UsersService:
                               passwords: UserUpdatePasswordSchema) -> bool:
         if await self.verify_password(user, passwords.old_password):
             new_password = self._hash_password(passwords.new_password)
-            await self.edit_user(uow, id=user.id, data={"password": new_password,
+            await self.edit_user(uow, login=user.login, data={"password": new_password,
                                                         "last_password_change": datetime.datetime.now()})
             return True
         return False
@@ -65,7 +65,7 @@ class UsersService:
             return False
         if not await self.verify_password(user, data.password):
             return False
-        return user.id
+        return user.login
 
     def _hash_password(self, password: str) -> str:
         hash_ = bcrypt.hashpw(password.encode(), bcrypt.gensalt())
