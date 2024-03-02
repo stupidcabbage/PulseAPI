@@ -13,7 +13,8 @@ if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
 target_metadata = Base.metadata
-config.set_main_option("sqlalchemy.url", postgres_settings.POSTGRES_CONN)
+sqlalchemy_url = f"postgresql://{postgres_settings.POSTGRES_USERNAME}:{postgres_settings.POSTGRES_PASSWORD}@{postgres_settings.POSTGRES_HOST}:{postgres_settings.POSTGRES_PORT}/{postgres_settings.POSTGRES_DATABASE}"
+config.set_main_option("sqlalchemy.url", sqlalchemy_url)
 
 
 def run_migrations_offline() -> None:
