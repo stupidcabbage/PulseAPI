@@ -41,10 +41,15 @@ class SQLAlchemyRepository(AbstractRepository):
         except IntegrityError as error:
             raise DBUniqueException(details=error.args)
 
-    async def edit_one(self, id: int, data: dict) -> int:
-        stmt = update(self.model).values(**data).filter_by(id=id).returning(self.model.id)
-        res = await self.session.execute(stmt)
-        return res.scalar_one()
+    async def edit_one(self, data: dict, **filter_by) -> model:
+        try:
+            stmt = update(self.model).values(**data).filter_by(
+                    **filter_by).returning(self.model)
+            res = await self.session.execute(stmt)
+            return (res.scalar_one()).to_read_model()
+        except IntegrityError as error:
+            raise DBUniqueException(details=error.args)
+    
 
     async def find_all(self):
         stmt = select(self.model)
@@ -81,19 +86,6 @@ class SQLAlchemyRepository(AbstractRepository):
             return res.to_read_model()
         else:
             return None
-
-    async def is_exists(self, data: dict[str, list | str]):
-        stmt = select(func.count(self.model))
-        for k, v in data.items():
-            stmt = stmt.where(getattr(self.model, k) == v)
-        res = await self.session.scalar(stmt)
-        if res:
-            return res.to_read_model()
-        else:
-            return None
-    
-    def _generate_where_parametrs(self, data: dict[str, list | str]):
-        pass
 
     async def find_one(self, **filter_by):
         stmt = select(self.model).filter_by(**filter_by)

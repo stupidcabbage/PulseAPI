@@ -14,7 +14,7 @@ class Post(Base):
 
     id: Mapped[str] = mapped_column(primary_key=True, default=uuid.uuid4)
     content: Mapped[str] = mapped_column()
-    author_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
+    author_login: Mapped[int] = mapped_column(ForeignKey("users.login"))
     author: Mapped["User"] = relationship(back_populates="posts")
     tags: Mapped[List["Tag"]] = relationship(back_populates="post")
     created_at: Mapped[datetime] = mapped_column(default=func.now)

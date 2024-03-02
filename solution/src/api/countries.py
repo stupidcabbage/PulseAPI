@@ -4,8 +4,8 @@ from fastapi import APIRouter, Path, Query
 
 from schemas.countries import Countries, CountrySchema
 from services.countries import CountriesService
-from dependencies import UOWDep
-from routers.exceptions import CountryDoesNotExists
+from api.dependencies import UOWDep
+from api.exceptions import CountryDoesNotExists
 
 router = APIRouter(prefix="/countries",
                    tags=["countries"])

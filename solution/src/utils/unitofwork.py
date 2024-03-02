@@ -5,6 +5,7 @@ from db.db import async_session_maker
 from repositories.posts import PostsRepositories, TagsRepositories
 from repositories.countries import CountriesRepository
 from repositories.users import UsersRepository
+from repositories.friends import FriendsRepository
 
 
 class IUnitOfWork(ABC):
@@ -12,6 +13,7 @@ class IUnitOfWork(ABC):
     tags: Type[TagsRepositories]
     posts: Type[PostsRepositories]
     countries: Type[CountriesRepository]
+    friends: Type[FriendsRepository]
 
     @abstractmethod
     def __init__(self):
@@ -45,6 +47,7 @@ class UnitOfWork:
         self.countries = CountriesRepository(self.session)
         self.tags = TagsRepositories(self.session)
         self.posts = PostsRepositories(self.session)
+        self.friends = FriendsRepository(self.session)
 
     async def __aexit__(self, *args):
         await self.rollback()

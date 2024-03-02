@@ -3,7 +3,7 @@ from os import getenv
 
 load_dotenv()
 
-
+"""
 class ServerSettings:
     SERVER_ADRESS: str = getenv("SERVER_ADRESS")
     SERVER_PORT: int = int(getenv("SERVER_PORT"))
@@ -17,7 +17,7 @@ class PostgresSettings:
     POSTGRES_HOST: str = getenv("POSTGRES_HOST")
     POSTGRES_PORT: str = getenv("POSTGRES_PORT")
     POSTGRES_DATABASE: str = getenv("POSTGRES_DATABASE")
-
+"""
 
 class DevPostgresSettings:
     POSTGRES_CONN: str = "postgresql://prodtest:prodtest@localhost:5432/prodtest"
@@ -27,12 +27,12 @@ class DevPostgresSettings:
     POSTGRES_PORT: str = "5432"
     POSTGRES_DATABASE: str = "prodtest"
 
-# class JWTSettings:
-    # SECRET_KEY: str = getenv("SECRET_KEY")
-    # ALGORITHM: str = "HS256"
-    # ACCSES_TOKEN_EXPIRE_MINUTES = 30
+class JWTSettings:
+    SECRET_KEY: str = getenv("SECRET_KEY")
+    ALGORITHM: str = "HS256"
+    ACCSES_TOKEN_EXPIRE_MINUTES = 30
 
 
-server_settings = ServerSettings()
-postgres_settings = PostgresSettings()
-# jwt_settings = JWTSettings()
+# server_settings = ServerSettings()
+postgres_settings = DevPostgresSettings()
+jwt_settings = JWTSettings()
