@@ -18,11 +18,11 @@ class PostgresSettings:
     POSTGRES_DATABASE: str = getenv("POSTGRES_DATABASE")
 
 class DevPostgresSettings:
-    POSTGRES_CONN: str = "postgresql://prodtest:prodtest@localhost:5432/prodtest"
+    POSTGRES_CONN: str = "postgresql://prodtest:prodtest@localhost:54345/prodtest"
     POSTGRES_USERNAME: str = "prodtest"
     POSTGRES_PASSWORD: str = "prodtest"
     POSTGRES_HOST: str = "localhost"
-    POSTGRES_PORT: str = "5432"
+    POSTGRES_PORT: str = "5433"
     POSTGRES_DATABASE: str = "prodtest"
 
 class JWTSettings:
