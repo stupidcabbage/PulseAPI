@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 
-from api.dependencies import JWTAuth, UOWDep
-from schemas.friends import FriendOutInSchema
+from api.dependencies import JWTAuth, PaginationDep, UOWDep
+from schemas.friends import FriendOutInSchema, FriendSchema
 from schemas.statuses import OKStatus
 from services.friends import FriendsService
 
@@ -25,4 +25,13 @@ async def remove_friend(uow: UOWDep, user: JWTAuth,
                                          from_login=user.login,
                                          login=data.login)
     return OKStatus
+
+
+@router.get("")
+async def get_friends(uow: UOWDep, user: JWTAuth,
+                      pagination: PaginationDep) -> list[FriendSchema]:
+    friends = await FriendsService().get_friends(uow, from_login=user.login,
+                                       limit=pagination.get("limit"),
+                                       offset=pagination.get("offset"))
+    return friends
 

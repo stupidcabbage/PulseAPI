@@ -88,6 +88,25 @@ class SQLAlchemyRepository(AbstractRepository):
         else:
             return None
     
+    async def get_count(self, data: dict[str, str | list | tuple]) -> int:
+        stmt = select(func.count(self.model))
+        stmt = await self._generate_where(stmt, data)
+        res = await self.session.scalar(stmt)
+        return res
+    
+    async def pagination_get(self, data: dict[str, str | list | tuple],
+                             limit: int, offset: int,
+                             order_by: str | None = None) -> list[model]:
+        stmt = select(self.model)
+        stmt = await self._generate_where(stmt, data)
+        stmt = stmt.limit(limit).offset(offset)
+        if order_by:
+            stmt = await self._order_by(stmt, order_by, _desc=True)
+
+        res = await self.session.execute(stmt)
+        res = [row[0].to_read_model() for row in res.all()]
+        return res
+
     async def _generate_where(self, stmt,
                               data: dict[str, str | list | tuple],
                               use_and: bool = False):

@@ -1,4 +1,5 @@
-from fastapi import APIRouter
+from typing import Annotated
+from fastapi import APIRouter, Path
 from api.dependencies import JWTAuth, UOWDep
 from schemas.statuses import OKStatus
 from schemas.users import UserEditSchema, UserSchema, UserUpdatePasswordSchema
@@ -36,3 +37,14 @@ async def update_password(passwords: UserUpdatePasswordSchema,
         raise BaseRouterException("Указанный пароль не соответствует действительности",
                                   403)
     return OKStatus
+
+
+@router.get(path="/profiles/{login}",
+            tags=["me"])
+async def get_profile(user: JWTAuth,
+                      uow: UOWDep,
+                      login: Annotated[
+                          str, Path(max_length=30, pattern=r"[a-zA-Z0-9-]+",
+                                    example="yellowMonkey")]) -> UserSchema:
+    profile = await UsersService().get_foreign_profile(uow, user, login)
+    return profile

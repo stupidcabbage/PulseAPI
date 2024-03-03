@@ -27,6 +27,7 @@ class DevPostgresSettings:
 
 class JWTSettings:
     SECRET_KEY: str = getenv("RANDOM_SECRET")
+    print(SECRET_KEY)
     ALGORITHM: str = "HS256"
     ACCSES_TOKEN_EXPIRE_MINUTES = 30
 

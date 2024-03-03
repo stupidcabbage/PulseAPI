@@ -1,8 +1,8 @@
-"""init
+"""initial
 
-Revision ID: 9130f1d0a04c
+Revision ID: c64e4544be94
 Revises: 
-Create Date: 2024-03-02 22:58:18.381566
+Create Date: 2024-03-03 04:30:39.869673
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = '9130f1d0a04c'
+revision: str = 'c64e4544be94'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -46,7 +46,7 @@ def upgrade() -> None:
     sa.UniqueConstraint('added_user_login', 'who_added_user_login')
     )
     op.create_table('posts',
-    sa.Column('id', sa.String(), nullable=False),
+    sa.Column('id', sa.Uuid(), nullable=False),
     sa.Column('content', sa.String(), nullable=False),
     sa.Column('author_login', sa.String(), nullable=False),
     sa.Column('created_at', sa.DateTime(), nullable=False),
@@ -54,9 +54,9 @@ def upgrade() -> None:
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('tags',
-    sa.Column('id', sa.String(), nullable=False),
-    sa.Column('name', sa.String(), nullable=False),
-    sa.Column('post_id', sa.String(), nullable=False),
+    sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
+    sa.Column('tag', sa.String(), nullable=False),
+    sa.Column('post_id', sa.Uuid(), nullable=False),
     sa.ForeignKeyConstraint(['post_id'], ['posts.id'], ),
     sa.PrimaryKeyConstraint('id')
     )

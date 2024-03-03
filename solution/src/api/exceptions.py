@@ -2,14 +2,13 @@ from fastapi import APIRouter, Request
 from fastapi.responses import JSONResponse
 from fastapi.exceptions import RequestValidationError
 
-from repositories.excpetions import CountryDoesNotExists, DBUniqueException, DoesNotExistsException, UserDoesNotExists
+from repositories.excpetions import CountryDoesNotExists, DBUniqueException, DoesNotExistsException, ProfileAccessDenied, UserDoesNotExists
 
 
 class BaseRouterException(Exception):
     def __init__(self, reason: str, status_code: int):
         self.reason = reason
         self.status_code = status_code
-
 
 
 router = APIRouter()
@@ -39,6 +38,13 @@ async def db_unique_exception_handler(request: Request, exc: DBUniqueException):
     return JSONResponse(
         status_code=409,
         content={"reason": "Значение не уникально."}
+    )
+
+
+async def profile_access_denied_exception_handler(request: Request, exc: ProfileAccessDenied):
+    return JSONResponse(
+        status_code=403,
+        content={"reason": exc.reason}
     )
 
 

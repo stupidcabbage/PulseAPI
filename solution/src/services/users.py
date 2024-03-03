@@ -1,13 +1,13 @@
 import datetime
 from typing import Literal
 import bcrypt
-from repositories.users import UsersRepository
 
-from schemas.users import FullUserSchema, UserEditSchema, UserRegisterSchema, UserSchema, UserUpdatePasswordSchema
+from schemas.users import FullUserSchema, UserRegisterSchema, UserUpdatePasswordSchema
 from services.countries import CountriesService
 from schemas.tokens import SignInSchema
 from utils.unitofwork import IUnitOfWork
-from repositories.excpetions import CountryDoesNotExists
+from repositories.excpetions import CountryDoesNotExists, ProfileAccessDenied
+from services import friends
 
 
 class UsersService:
@@ -33,13 +33,37 @@ class UsersService:
             raise CountryDoesNotExists
         
         async with uow:
-            return await uow.users.edit_one(login, data=data)
+            user = await uow.users.edit_one(data=data, login=login)
+            await uow.commit()
+            return user
 
     async def _is_country_exists(self, uow: IUnitOfWork,
                                  alpha2: str) -> bool:
         country = await CountriesService().get_country_by(
                 uow, {"alpha2": alpha2})
         return bool(country)
+
+    async def get_foreign_profile(self, uow: IUnitOfWork,
+                                  user: FullUserSchema, login: str) -> FullUserSchema:
+        if not await self.is_user_has_access(uow, user.login, login):
+            raise ProfileAccessDenied(reason="Пользователя не существует")
+
+        profile = await self.get_user(uow, {"login": login})
+
+        return profile
+
+    async def is_user_has_access(self, uow: IUnitOfWork, from_login: str, login: str) -> bool:
+        if from_login  == login:
+            return True
+
+        profile = await self.get_user(uow, {"login": login})
+        if not profile:
+            return False
+        
+        if not profile.is_public:
+            if not await friends.FriendsService().get_friend(uow, login, from_login):
+                return False
+        return True
     
     async def update_password(self, uow: IUnitOfWork,
                               user: FullUserSchema, 

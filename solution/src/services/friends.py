@@ -1,5 +1,5 @@
 from repositories.excpetions import UserDoesNotExists
-from services.users import UsersService
+from services import users
 from schemas.friends import FriendSchema
 from utils.unitofwork import IUnitOfWork
 
@@ -23,6 +23,16 @@ class FriendsService:
             await uow.commit()
         return True
     
+    async def get_friends(self, uow: IUnitOfWork,
+                          from_login: str, limit: int,
+                          offset: int) -> list[FriendSchema]:
+        async with uow:
+            friends = await uow.friends.pagination_get(
+                    data={"who_added_user_login": from_login},
+                    limit=limit, offset=offset)
+            return friends
+
+
     async def get_friend(self, uow: IUnitOfWork,
                          from_login: str, login: str) -> FriendSchema:
         async with uow:
@@ -42,6 +52,6 @@ class FriendsService:
 
 
     async def _is_user_exists(self, uow: IUnitOfWork, login: str) -> bool:
-        if await UsersService().get_user(uow, {"login": login}):
+        if await users.UsersService().get_user(uow, {"login": login}):
             return True
         return False

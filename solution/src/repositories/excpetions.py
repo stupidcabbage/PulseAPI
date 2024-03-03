@@ -26,3 +26,9 @@ class UserDoesNotExists(DoesNotExistsException):
         self.reason = "Пользователь с данным логином не найден."
         self.details = "None"
         self.status_code = 404
+
+
+class ProfileAccessDenied(BaseDBException):
+    def __init__(self, reason: str):
+        self.reason = reason
+        self.details = "None"
