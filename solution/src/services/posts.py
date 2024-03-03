@@ -1,9 +1,9 @@
 import re
 
-from schemas.posts import PostInSchema, PostSchema
-from repositories.excpetions import ProfileAccessDenied
-from services.users import UsersService
-from utils.unitofwork import IUnitOfWork
+from src.schemas.posts import PostInSchema, PostSchema
+from src.repositories.excpetions import ProfileAccessDenied
+from src.services.users import UsersService
+from src.utils.unitofwork import IUnitOfWork
 
 
 class PostsService:

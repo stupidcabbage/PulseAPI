@@ -1,11 +1,11 @@
 from typing import Annotated
 from fastapi import APIRouter, Path
-from api.dependencies import JWTAuth, UOWDep
-from schemas.statuses import OKStatus
-from schemas.users import UserEditSchema, UserSchema, UserUpdatePasswordSchema
-from services.users import UsersService
+from src.api.dependencies import JWTAuth, UOWDep
+from src.schemas.statuses import OKStatus
+from src.schemas.users import UserEditSchema, UserSchema, UserUpdatePasswordSchema
+from src.services.users import UsersService
+from src.api.exceptions import BaseRouterException
 
-from api.exceptions import BaseRouterException
 
 
 router = APIRouter()

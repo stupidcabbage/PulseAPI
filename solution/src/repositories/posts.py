@@ -1,5 +1,5 @@
-from repositories.repository import SQLAlchemyRepository
-from db.models.posts import Post, Tag
+from src.repositories.repository import SQLAlchemyRepository
+from src.db.models.posts import Post, Tag
 
 
 class PostsRepositories(SQLAlchemyRepository):

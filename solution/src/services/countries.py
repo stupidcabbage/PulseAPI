@@ -1,6 +1,6 @@
 from typing import Sequence
-from schemas.countries import CountrySchema
-from utils.unitofwork import IUnitOfWork
+from src.schemas.countries import CountrySchema
+from src.utils.unitofwork import IUnitOfWork
 
 
 class CountriesService:

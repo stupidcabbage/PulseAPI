@@ -11,8 +11,11 @@ WORKDIR /app
 COPY --from=builder requirements.txt ./
 RUN python -m pip install --no-cache-dir -r requirements.txt
 
-COPY src/ .
+COPY . .
+
+ADD start.sh /
+RUN chmod +x /start.sh
 
 ENV SERVER_PORT=8000
 
-CMD ["sh", "-c", "exec alembic upgrade head ; exec python3 -m uvicorn main:app --host=0.0.0.0 --port=$SERVER_PORT"]
+CMD ["/start.sh"]

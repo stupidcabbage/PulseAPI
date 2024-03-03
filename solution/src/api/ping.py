@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 
-from schemas.statuses import OKStatus
+from src.schemas.statuses import OKStatus
 
 
 router = APIRouter(tags=["ping"])

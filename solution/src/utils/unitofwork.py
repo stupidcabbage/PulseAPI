@@ -1,11 +1,11 @@
 from abc import ABC, abstractmethod
 from typing import Type
 
-from db.db import async_session_maker
-from repositories.posts import PostsRepositories, TagsRepositories
-from repositories.countries import CountriesRepository
-from repositories.users import UsersRepository
-from repositories.friends import FriendsRepository
+from src.db.db import async_session_maker
+from src.repositories.posts import PostsRepositories, TagsRepositories
+from src.repositories.countries import CountriesRepository
+from src.repositories.users import UsersRepository
+from src.repositories.friends import FriendsRepository
 
 
 class IUnitOfWork(ABC):

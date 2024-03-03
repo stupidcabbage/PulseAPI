@@ -2,12 +2,12 @@ import datetime
 from typing import Literal
 import bcrypt
 
-from schemas.users import FullUserSchema, UserRegisterSchema, UserUpdatePasswordSchema
-from services.countries import CountriesService
-from schemas.tokens import SignInSchema
-from utils.unitofwork import IUnitOfWork
-from repositories.excpetions import CountryDoesNotExists, ProfileAccessDenied
-from services import friends
+from src.schemas.users import FullUserSchema, UserRegisterSchema, UserUpdatePasswordSchema
+from src.services.countries import CountriesService
+from src.schemas.tokens import SignInSchema
+from src.utils.unitofwork import IUnitOfWork
+from src.repositories.excpetions import CountryDoesNotExists, ProfileAccessDenied
+from src.services import friends
 
 
 class UsersService:

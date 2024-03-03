@@ -3,8 +3,8 @@ from sqlalchemy import ForeignKey, UniqueConstraint, func
 
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from db.db import Base
-from schemas.friends import FriendSchema
+from src.db.db import Base
+from src.schemas.friends import FriendSchema
 
 
 class Friend(Base):

@@ -1,11 +1,11 @@
 from typing import Annotated
 
 from fastapi import Depends
-from schemas.users import FullUserSchema
-from api.pagination import get_pagination_params
+from src.schemas.users import FullUserSchema
+from src.api.pagination import get_pagination_params
 
-from utils.unitofwork import IUnitOfWork, UnitOfWork
-from api.auth.bearer import JWTBearer
+from src.utils.unitofwork import IUnitOfWork, UnitOfWork
+from src.api.auth.bearer import JWTBearer
 
 
 UOWDep = Annotated[IUnitOfWork, Depends(UnitOfWork)]

@@ -4,11 +4,11 @@ from typing import Literal
 from fastapi import Request
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 
-from api.auth.handler import decodeJWT
-from api.exceptions import BaseRouterException
-from schemas.users import FullUserSchema, UserSchema
-from services.users import UsersService
-from utils.unitofwork import UnitOfWork
+from src.api.auth.handler import decodeJWT
+from src.api.exceptions import BaseRouterException
+from src.schemas.users import FullUserSchema, UserSchema
+from src.services.users import UsersService
+from src.utils.unitofwork import UnitOfWork
 
 
 class JWTBearer(HTTPBearer):

@@ -1,6 +1,6 @@
-from repositories.repository import SQLAlchemyRepository
+from src.repositories.repository import SQLAlchemyRepository
 
-from db.models.users import Friend
+from src.db.models.users import Friend
 
 
 class FriendsRepository(SQLAlchemyRepository):

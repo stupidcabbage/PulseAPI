@@ -5,8 +5,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.exc import IntegrityError
 from asyncpg.exceptions import UniqueViolationError
 
-from repositories.excpetions import DBUniqueException
-from repositories.excpetions import BaseDBException
+from src.repositories.excpetions import DBUniqueException
+from src.repositories.excpetions import BaseDBException
 
 
 class AbstractRepository(ABC):

@@ -1,11 +1,11 @@
 from fastapi import FastAPI
 
-from api import countries, posts, ping, users, friends
-from api.auth import auth
-from api.exceptions import base_exception_handler, BaseRouterException, db_unique_exception_handler, profile_access_denied_exception_handler, validation_exception_handler, doesnot_exists_handler
+from src.api import countries, posts, ping, users, friends
+from src.api.auth import auth
+from src.api.exceptions import base_exception_handler, BaseRouterException, db_unique_exception_handler, profile_access_denied_exception_handler, validation_exception_handler, doesnot_exists_handler
 from fastapi.exceptions import RequestValidationError
 
-from repositories.excpetions import DBUniqueException, CountryDoesNotExists, DoesNotExistsException, ProfileAccessDenied, UserDoesNotExists
+from src.repositories.excpetions import DBUniqueException, CountryDoesNotExists, DoesNotExistsException, ProfileAccessDenied, UserDoesNotExists
 
 
 app = FastAPI(root_path="/api")

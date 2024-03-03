@@ -4,9 +4,9 @@ from sqlalchemy import ForeignKey, UniqueConstraint, func
 
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from db.db import Base
-from db.models.friends import Friend
-from schemas.users import FullUserSchema, UserSchema
+from src.db.db import Base
+from src.db.models.friends import Friend
+from src.schemas.users import FullUserSchema, UserSchema
 
 
 class User(Base):

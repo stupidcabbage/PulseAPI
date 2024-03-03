@@ -5,10 +5,10 @@ from typing import List
 from sqlalchemy import ForeignKey, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from db.db import Base
-from db.models.users import User
+from src.db.db import Base
+from src.db.models.users import User
 
-from schemas.posts import PostSchema, PostTagSchema
+from src.schemas.posts import PostSchema, PostTagSchema
 
 
 class Post(Base):

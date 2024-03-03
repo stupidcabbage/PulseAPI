@@ -2,10 +2,10 @@ from typing import Annotated
 
 from fastapi import APIRouter, Path, Query
 
-from schemas.countries import Countries, CountrySchema
-from services.countries import CountriesService
-from api.dependencies import UOWDep
-from api.exceptions import CountryDoesNotExists
+from src.schemas.countries import Countries, CountrySchema
+from src.services.countries import CountriesService
+from src.api.dependencies import UOWDep
+from src.api.exceptions import CountryDoesNotExists
 
 router = APIRouter(prefix="/countries",
                    tags=["countries"])

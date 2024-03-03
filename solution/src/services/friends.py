@@ -1,7 +1,7 @@
-from repositories.excpetions import UserDoesNotExists
-from services import users
-from schemas.friends import FriendSchema
-from utils.unitofwork import IUnitOfWork
+from src.repositories.excpetions import UserDoesNotExists
+from src.services import users
+from src.schemas.friends import FriendSchema
+from src.utils.unitofwork import IUnitOfWork
 
 
 class FriendsService:

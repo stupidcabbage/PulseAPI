@@ -1,9 +1,9 @@
 from fastapi import APIRouter
 
-from api.dependencies import JWTAuth, PaginationDep, UOWDep
-from schemas.friends import FriendOutInSchema, FriendSchema
-from schemas.statuses import OKStatus
-from services.friends import FriendsService
+from src.api.dependencies import JWTAuth, PaginationDep, UOWDep
+from src.schemas.friends import FriendOutInSchema, FriendSchema
+from src.schemas.statuses import OKStatus
+from src.services.friends import FriendsService
 
 
 router = APIRouter(prefix="/friends", tags=["friends"])

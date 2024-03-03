@@ -1,12 +1,12 @@
 from typing import Annotated
 from fastapi import APIRouter, Body
-from api.dependencies import UOWDep
+from src.api.dependencies import UOWDep
 
-from schemas.users import UserRegisterSchema, ProfileSchemaOut 
-from services.users import UsersService
-from api.exceptions import BaseRouterException
-from schemas.tokens import SignInSchema, TokenSchema
-from api.auth.handler import signJWT
+from src.schemas.users import UserRegisterSchema, ProfileSchemaOut 
+from src.services.users import UsersService
+from src.api.exceptions import BaseRouterException
+from src.schemas.tokens import SignInSchema, TokenSchema
+from src.api.auth.handler import signJWT
 
 
 router = APIRouter(prefix="/auth", tags=["auth"])

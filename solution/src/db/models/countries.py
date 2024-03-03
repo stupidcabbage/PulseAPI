@@ -1,8 +1,8 @@
 from enum import Enum
 from sqlalchemy.orm import Mapped, mapped_column
 
-from db.db import Base
-from schemas.countries import CountrySchema
+from src.db.db import Base
+from src.schemas.countries import CountrySchema
 
 
 class Regions(Enum):

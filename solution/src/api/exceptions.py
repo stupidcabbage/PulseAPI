@@ -2,7 +2,7 @@ from fastapi import APIRouter, Request
 from fastapi.responses import JSONResponse
 from fastapi.exceptions import RequestValidationError
 
-from repositories.excpetions import CountryDoesNotExists, DBUniqueException, DoesNotExistsException, ProfileAccessDenied, UserDoesNotExists
+from src.repositories.excpetions import CountryDoesNotExists, DBUniqueException, DoesNotExistsException, ProfileAccessDenied, UserDoesNotExists
 
 
 class BaseRouterException(Exception):

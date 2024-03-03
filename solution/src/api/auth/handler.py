@@ -1,7 +1,7 @@
 import time
 from jose import jwt
-from config import jwt_settings
-from schemas.tokens import TokenSchema
+from src.config import jwt_settings
+from src.schemas.tokens import TokenSchema
 
 
 async def signJWT(login: str) -> TokenSchema:

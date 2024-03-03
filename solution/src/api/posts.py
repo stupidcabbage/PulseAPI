@@ -1,9 +1,9 @@
 from typing import Annotated
 from fastapi import APIRouter, Path
 
-from schemas.posts import PostInSchema, PostSchema
-from services.posts import PostsService
-from api.dependencies import JWTAuth, PaginationDep, UOWDep
+from src.schemas.posts import PostInSchema, PostSchema
+from src.services.posts import PostsService
+from src.api.dependencies import JWTAuth, PaginationDep, UOWDep
 
 router = APIRouter(prefix="/posts", tags=["posts"])
 
