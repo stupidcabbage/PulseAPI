@@ -48,5 +48,4 @@ async def like_post(uow: UOWDep, user: JWTAuth,
 @router.post("/{postID}/dislike")
 async def dislike_post(uow: UOWDep, user: JWTAuth,
                        postID: Annotated[str, Path()]) -> PostSchema:
-    print("HAHAHAH")
     return await PostsService().update_vote(uow, user.login, postID, 0)

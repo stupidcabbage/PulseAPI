@@ -5,19 +5,22 @@ from src.utils.unitofwork import IUnitOfWork
 
 class CountriesService:
     async def get_countries(
-            self, uow: IUnitOfWork) -> Sequence[CountrySchema]:
+            self, uow: IUnitOfWork, order_by: str = "alpha2",
+            order_desc: bool = False) -> Sequence[CountrySchema]:
         async with uow:
-            countries = await uow.countries.find_all()
+            countries = await uow.countries.find_all(order_by=order_by,
+                                                     order_desc=order_desc)
             return countries
 
     async def get_countries_by(
             self, uow: IUnitOfWork,
             data: dict[str, str | list | tuple],
-            order_by: str = "alpha2") -> Sequence[CountrySchema]:
+            order_by: str = "alpha2", order_desc: bool = False
+    ) -> Sequence[CountrySchema]:
         async with uow:
             countries = await uow.countries.find_where(data=data,
                                                        order_by=order_by,
-                                                       order_desc=True)
+                                                       order_desc=order_desc)
             return countries
 
     async def get_country_by(

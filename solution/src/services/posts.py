@@ -29,15 +29,17 @@ class PostsService:
             if data.get("id"):
                 is_valid = re.match(self.ID_REGEX, data.get("id"))
                 if not is_valid:
-                    raise ProfileAccessDenied(reason="Публикации не существует.")
+                    raise ProfileAccessDenied(reason="Публикации не существует.",
+                                              status_code=404)
                 
             post = await uow.posts.get_where(data=data)
-            post.likes_count, post.dislikes_count = await self.get_reacts(uow, from_login, post.id)
+            post.likes_count, post.dislikes_count = await self.get_reacts(uow, post.id)
             if not post:
                 raise ProfileAccessDenied(reason="Публикации не существует.")
             if not await UsersService().is_user_has_access(uow, from_login,
                                                                 post.author):
-                raise ProfileAccessDenied(reason="Нет доступа к публикации.")
+                raise ProfileAccessDenied(reason="Нет доступа к публикации.",
+                                          status_code=404)
             return post
 
     async def get_posts(self, uow: IUnitOfWork, from_login: str, login: str,
@@ -45,13 +47,14 @@ class PostsService:
         async with uow:
             if not await UsersService().is_user_has_access(uow, from_login,
                                                            login):
-                raise ProfileAccessDenied(reason="Нет доступа к публикациям.")
+                raise ProfileAccessDenied(reason="Нет доступа к публикациям.",
+                                          status_code=404)
 
             posts = await uow.posts.pagination_get(data={"author_login": login},
                                                    limit=limit, offset=offset,
                                                    order_by="created_at")
             for i in posts:
-                i.likes_count, i.dislikes_count = await self.get_reacts(uow, from_login, i.id)
+                i.likes_count, i.dislikes_count = await self.get_reacts(uow, i.id)
             return posts
     
     async def update_vote(self, uow: IUnitOfWork, user_login: str, post_id: str,
@@ -60,11 +63,13 @@ class PostsService:
             post = await self.get_post(uow, user_login, data={"id": post_id})
 
             if not post:
-                raise ProfileAccessDenied(reason="Пост не найден")
+                raise ProfileAccessDenied(reason="Пост не найден",
+                                          status_code=404)
             
             if not await UsersService().is_user_has_access(uow, user_login,
                                                            post.author):
-                raise ProfileAccessDenied(reason="Нет доступа к публикации.")
+                raise ProfileAccessDenied(reason="Нет доступа к публикации.",
+                                          status_code=404)
 
             react = await self.get_react(uow, user_login, post.id)
             if not react:
@@ -97,11 +102,9 @@ class PostsService:
         return like
 
     async def get_reacts(self, uow: IUnitOfWork,
-                         user_login: str, post_id: str) -> tuple[int, int]:
-        likes_count = await uow.likes.get_count(data={"user_login": user_login,
-                                                      "post_id": post_id,
+                         post_id: str) -> tuple[int, int]:
+        likes_count = await uow.likes.get_count(data={"post_id": post_id,
                                                       "vote": 1})
-        dislikes_count = await uow.likes.get_count(data={"user_login": user_login,
-                                                          "post_id": post_id,
-                                                          "vote": 0})
+        dislikes_count = await uow.likes.get_count(data={"post_id": post_id,
+                                                         "vote": 0})
         return (likes_count, dislikes_count)

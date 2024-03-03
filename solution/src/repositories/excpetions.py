@@ -16,10 +16,10 @@ class DoesNotExistsException(BaseDBException):
         self.status_code = status_code
 
 class CountryDoesNotExists(DoesNotExistsException):
-    def __init__(self):
+    def __init__(self, status_code: int = 404):
         self.reason = "Страна с указанным кодом не найдена."
         self.details = "None"
-        self.status_code = 401
+        self.status_code = status_code
 
 class UserDoesNotExists(DoesNotExistsException):
     def __init__(self):
@@ -29,6 +29,7 @@ class UserDoesNotExists(DoesNotExistsException):
 
 
 class ProfileAccessDenied(BaseDBException):
-    def __init__(self, reason: str):
+    def __init__(self, reason: str, status_code: int = 403):
         self.reason = reason
+        self.status_code = status_code
         self.details = "None"

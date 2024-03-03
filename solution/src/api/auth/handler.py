@@ -8,7 +8,7 @@ async def signJWT(login: str) -> TokenSchema:
     payload = {
         "login": login,
         "created_at": time.time(),
-        "expires": time.time() + 6000
+        "expires": time.time() + jwt_settings.ACCSES_TOKEN_EXPIRE_MINUTES * 60
     }
     token = jwt.encode(payload, jwt_settings.SECRET_KEY,
                        algorithm=jwt_settings.ALGORITHM)

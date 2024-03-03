@@ -3,10 +3,8 @@ from abc import ABC, abstractmethod
 from sqlalchemy import and_, delete, desc, func, insert, or_, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.exc import IntegrityError
-from asyncpg.exceptions import UniqueViolationError
 
 from src.repositories.excpetions import DBUniqueException
-from src.repositories.excpetions import BaseDBException
 
 
 class AbstractRepository(ABC):
@@ -48,12 +46,14 @@ class SQLAlchemyRepository(AbstractRepository):
             res = await self.session.execute(stmt)
             return (res.scalar_one()).to_read_model()
         except IntegrityError as error:
-            print(error)
             raise DBUniqueException(details=error.args)
     
 
-    async def find_all(self):
+    async def find_all(self, order_by: str  | None = None,
+                       order_desc: bool = False):
         stmt = select(self.model)
+        if order_by:
+            stmt = await self._order_by(stmt, order_by, order_desc)
         res = await self.session.execute(stmt)
         res = [row[0].to_read_model() for row in res.all()]
         return res
@@ -64,7 +64,7 @@ class SQLAlchemyRepository(AbstractRepository):
                          order_desc: bool = False):
         stmt = select(self.model)
         stmt = await self._generate_where(stmt, data)
-
+        
         if order_by:
             stmt = await self._order_by(stmt, order_by, order_desc)
 
@@ -93,7 +93,6 @@ class SQLAlchemyRepository(AbstractRepository):
         stmt = select(func.count(getattr(self.model, "id")))
         stmt = await self._generate_where(stmt, data)
         res = await self.session.scalar(stmt)
-        print(res)
         return res
     
     async def pagination_get(self, data: dict[str, str | list | tuple],

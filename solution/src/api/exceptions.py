@@ -1,17 +1,14 @@
-from fastapi import APIRouter, Request
+from fastapi import Request
 from fastapi.responses import JSONResponse
 from fastapi.exceptions import RequestValidationError
 
-from src.repositories.excpetions import CountryDoesNotExists, DBUniqueException, DoesNotExistsException, ProfileAccessDenied, UserDoesNotExists
+from src.repositories.excpetions import DBUniqueException, DoesNotExistsException, ProfileAccessDenied
 
 
 class BaseRouterException(Exception):
     def __init__(self, reason: str, status_code: int):
         self.reason = reason
         self.status_code = status_code
-
-
-router = APIRouter()
 
 
 async def base_exception_handler(request: Request, exc: BaseRouterException):
@@ -22,7 +19,7 @@ async def base_exception_handler(request: Request, exc: BaseRouterException):
 
 async def doesnot_exists_handler(request: Request, exc: DoesNotExistsException):
     return JSONResponse(
-        status_code=401,
+        status_code=exc.status_code,
         content={"reason": exc.reason})
 
 
@@ -43,7 +40,7 @@ async def db_unique_exception_handler(request: Request, exc: DBUniqueException):
 
 async def profile_access_denied_exception_handler(request: Request, exc: ProfileAccessDenied):
     return JSONResponse(
-        status_code=403,
+        status_code=exc.status_code,
         content={"reason": exc.reason}
     )
 

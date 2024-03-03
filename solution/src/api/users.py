@@ -24,8 +24,12 @@ async def get_my_profile(user: JWTAuth) -> UserSchema:
 async def edit_profile(fields: UserEditSchema,
                        uow: UOWDep,
                        user: JWTAuth) -> UserSchema:
+    data = fields.model_dump(exclude_none=True)
+    if not data:
+        raise BaseRouterException("Необходимо указать хотя бы одно поле.",
+                                   400)
     new_user = await UsersService().edit_user(
-        uow, user.login, fields.model_dump(exclude_none=True))
+        uow, user.login, data)
     return new_user
 
 
@@ -40,7 +44,8 @@ async def update_password(passwords: UserUpdatePasswordSchema,
 
 
 @router.get(path="/profiles/{login}",
-            tags=["me"])
+            tags=["me"],
+            response_model_exclude_none=True)
 async def get_profile(user: JWTAuth,
                       uow: UOWDep,
                       login: Annotated[

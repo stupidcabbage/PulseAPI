@@ -1,11 +1,11 @@
 from typing import Annotated
 
 from fastapi import APIRouter, Path, Query
+from src.repositories.excpetions import CountryDoesNotExists
 
 from src.schemas.countries import Countries, CountrySchema
 from src.services.countries import CountriesService
 from src.api.dependencies import UOWDep
-from src.api.exceptions import CountryDoesNotExists
 
 router = APIRouter(prefix="/countries",
                    tags=["countries"])
@@ -34,7 +34,7 @@ async def get_countries(uow: UOWDep,
 async def get_country_by_alpha2(
         uow: UOWDep,
         alpha2: Annotated[str,
-                          Path(max_length=2, min_length=2, example="RU")]
+                          Path(example="RU")]
 ) -> CountrySchema:
     """
     Получение одной страны по её уникальному двухбуквенному коду.\n

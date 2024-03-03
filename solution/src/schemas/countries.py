@@ -21,7 +21,8 @@ class CountrySchema(BaseModel):
     )
     region: str = Field(
             description="Географический регион, к которому относится страна",
-            examples=["Europe", "Africa", "Americas", "Oceania", "Asia"]
+            examples=["Europe", "Africa", "Americas",
+                      "Oceania", "Asia", "Americas"]
     )
 
     class Config:
@@ -33,4 +34,5 @@ class Countries(Enum):
     afirca = "Africa"
     oceania = "Ocenia"
     asia = "Asia"
+    americas = "Americas"
     all_ = None

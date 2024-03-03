@@ -1,6 +1,6 @@
 from datetime import datetime
-from pydantic import BaseModel, Field
-
+import re
+from pydantic import BaseModel, Field, field_validator
 
 
 class UserSchema(BaseModel):
@@ -12,7 +12,8 @@ class UserSchema(BaseModel):
     )
     email: str = Field(
             title="E-mail пользователя",
-            max_length=30,
+            max_length=50,
+            min_length=1,
             examples=["yellowstone1980@you.ru"],
             pattern=r"^\S+@\S+\.\S+$",
     )
@@ -83,20 +84,23 @@ class UserEditSchema(BaseModel):
         default=None
     )
 
-
 class UserRegisterSchema(UserSchema):
     password: str = Field(
         min_length=6,
         max_length=100,
-        #pattern=r"^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{6,}$",
         examples=["$aba4821FWfew01#.fewA$"]
     )
 
+    @field_validator("password")
+    def password_validator(cls, password: str) -> str:
+        if not re.fullmatch(r'^.*(?=.{6,})(?=.*[a-zA-Z])(?=.*\d).*$',
+                        password):
+            raise ValueError("Ненадежный пароль.")
+        return password
+
+        
 class FullUserSchema(UserSchema):
     password: str = Field(
-        min_length=6,
-        max_length=100,
-        #pattern=r"^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{6,}$",
         examples=["$aba4821FWfew01#.fewA$"],
         exclude=True
     )
@@ -108,11 +112,17 @@ class UserUpdatePasswordSchema(BaseModel):
     new_password: str = Field(
         min_length=6,
         max_length=100,
-        #pattern=r"^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{6,}$",
         examples=["$aba4821FWfew01#.fewA$"],
-        exclude=True,
         alias="newPassword"
     )
+
+    @field_validator("new_password")
+    def password_validator(cls, password: str) -> str:
+        if not re.fullmatch(r'^.*(?=.{6,})(?=.*[a-zA-Z])(?=.*\d).*$',
+                        password):
+            raise ValueError("Ненадежный пароль.")
+        return password
+
 
 class ProfileSchemaOut(BaseModel):
     profile: UserSchema

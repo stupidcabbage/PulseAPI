@@ -27,5 +27,5 @@ class Friend(Base):
         return FriendSchema(
             added=self.who_added_user_login,
             login=self.added_user_login,
-            addedAt=(self.added_at).strftime("%Y-%m-%dT%H:%M:%S.%f")
+            addedAt=(self.added_at).isoformat()
         )

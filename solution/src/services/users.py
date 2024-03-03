@@ -30,7 +30,7 @@ class UsersService:
                         login: str, data: dict[str, str]):
         if (data.get("country_code") and
             not await self._is_country_exists(uow, data.get("country_code"))):
-            raise CountryDoesNotExists
+            raise CountryDoesNotExists(status_code=400)
         
         async with uow:
             user = await uow.users.edit_one(data=data, login=login)

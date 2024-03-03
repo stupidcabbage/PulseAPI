@@ -1,7 +1,7 @@
 import uuid
 from sqlalchemy import ForeignKey, UniqueConstraint
 
-from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy.orm import Mapped, mapped_column
 
 from src.db.db import Base
 from src.schemas.likes import ReactSchema
