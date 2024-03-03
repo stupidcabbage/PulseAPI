@@ -4,7 +4,7 @@ from sqlalchemy import engine_from_config
 from sqlalchemy import pool
 
 from alembic import context
-from src.db import *
+from src.db.db import *
 from src.config import postgres_settings
 
 config = context.config
