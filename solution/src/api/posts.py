@@ -37,3 +37,16 @@ async def get_foreign_feed(uow: UOWDep, user: JWTAuth,
                                           login=login,
                                           limit=pagination.get("limit"),
                                           offset=pagination.get("offset"))
+
+
+@router.post("/{postID}/like")
+async def like_post(uow: UOWDep, user: JWTAuth,
+                   postID: Annotated[str, Path()]) -> PostSchema:
+    return await PostsService().update_vote(uow, user.login, postID, 1)
+
+
+@router.post("/{postID}/dislike")
+async def dislike_post(uow: UOWDep, user: JWTAuth,
+                       postID: Annotated[str, Path()]) -> PostSchema:
+    print("HAHAHAH")
+    return await PostsService().update_vote(uow, user.login, postID, 0)

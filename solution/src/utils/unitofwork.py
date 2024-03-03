@@ -6,6 +6,7 @@ from src.repositories.posts import PostsRepositories, TagsRepositories
 from src.repositories.countries import CountriesRepository
 from src.repositories.users import UsersRepository
 from src.repositories.friends import FriendsRepository
+from src.repositories.likes import LikesRepositories
 
 
 class IUnitOfWork(ABC):
@@ -14,6 +15,7 @@ class IUnitOfWork(ABC):
     posts: Type[PostsRepositories]
     countries: Type[CountriesRepository]
     friends: Type[FriendsRepository]
+    likes: Type[LikesRepositories]
 
     @abstractmethod
     def __init__(self):
@@ -48,6 +50,7 @@ class UnitOfWork:
         self.tags = TagsRepositories(self.session)
         self.posts = PostsRepositories(self.session)
         self.friends = FriendsRepository(self.session)
+        self.likes = LikesRepositories(self.session)
 
     async def __aexit__(self, *args):
         await self.rollback()

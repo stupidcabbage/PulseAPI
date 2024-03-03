@@ -1,4 +1,5 @@
 import re
+from src.schemas.likes import ReactSchema
 
 from src.schemas.posts import PostInSchema, PostSchema
 from src.repositories.excpetions import ProfileAccessDenied
@@ -31,6 +32,7 @@ class PostsService:
                     raise ProfileAccessDenied(reason="Публикации не существует.")
                 
             post = await uow.posts.get_where(data=data)
+            post.likes_count, post.dislikes_count = await self.get_reacts(uow, from_login, post.id)
             if not post:
                 raise ProfileAccessDenied(reason="Публикации не существует.")
             if not await UsersService().is_user_has_access(uow, from_login,
@@ -48,4 +50,58 @@ class PostsService:
             posts = await uow.posts.pagination_get(data={"author_login": login},
                                                    limit=limit, offset=offset,
                                                    order_by="created_at")
+            for i in posts:
+                i.likes_count, i.dislikes_count = await self.get_reacts(uow, from_login, i.id)
             return posts
+    
+    async def update_vote(self, uow: IUnitOfWork, user_login: str, post_id: str,
+                          vote: int) -> PostSchema:
+        async with uow:
+            post = await self.get_post(uow, user_login, data={"id": post_id})
+
+            if not post:
+                raise ProfileAccessDenied(reason="Пост не найден")
+            
+            if not await UsersService().is_user_has_access(uow, user_login,
+                                                           post.author):
+                raise ProfileAccessDenied(reason="Нет доступа к публикации.")
+
+            react = await self.get_react(uow, user_login, post.id)
+            if not react:
+                react = await uow.likes.add_one(data={"post_id": post_id,
+                                                "user_login": user_login,
+                                                "vote": vote})
+                if vote:
+                    post.likes_count += 1
+                else:
+                    post.dislikes_count += 1
+                    
+            elif react.vote != vote:
+                await uow.likes.edit_one(post_id=post_id,
+                                         user_login=user_login,
+                                         data={"vote": vote})
+                if vote:
+                    post.dislikes_count -= 1
+                    post.likes_count += 1
+                else:
+                    post.likes_count -= 1
+                    post.dislikes_count += 1
+                    
+            await uow.commit()
+            return post
+
+    async def get_react(self, uow: IUnitOfWork, user_login, post_id: str) -> ReactSchema:
+        like = await uow.likes.get_where(
+                data={"post_id": post_id,
+                      "user_login": user_login})
+        return like
+
+    async def get_reacts(self, uow: IUnitOfWork,
+                         user_login: str, post_id: str) -> tuple[int, int]:
+        likes_count = await uow.likes.get_count(data={"user_login": user_login,
+                                                      "post_id": post_id,
+                                                      "vote": 1})
+        dislikes_count = await uow.likes.get_count(data={"user_login": user_login,
+                                                          "post_id": post_id,
+                                                          "vote": 0})
+        return (likes_count, dislikes_count)

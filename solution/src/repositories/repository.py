@@ -48,6 +48,7 @@ class SQLAlchemyRepository(AbstractRepository):
             res = await self.session.execute(stmt)
             return (res.scalar_one()).to_read_model()
         except IntegrityError as error:
+            print(error)
             raise DBUniqueException(details=error.args)
     
 
@@ -89,9 +90,10 @@ class SQLAlchemyRepository(AbstractRepository):
             return None
     
     async def get_count(self, data: dict[str, str | list | tuple]) -> int:
-        stmt = select(func.count(self.model))
+        stmt = select(func.count(getattr(self.model, "id")))
         stmt = await self._generate_where(stmt, data)
         res = await self.session.scalar(stmt)
+        print(res)
         return res
     
     async def pagination_get(self, data: dict[str, str | list | tuple],

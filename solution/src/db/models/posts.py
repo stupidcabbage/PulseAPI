@@ -21,7 +21,8 @@ class Post(Base):
     tags: Mapped[List["Tag"]] = relationship(back_populates="post",
                                              lazy="subquery")
     created_at: Mapped[datetime] = mapped_column(insert_default=func.now())
-
+    reacts: Mapped[List["Like"]] = relationship()
+    
     def to_read_model(self) -> PostSchema:
         return PostSchema(
             id=str(self.id),

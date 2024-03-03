@@ -31,6 +31,7 @@ class User(Base):
     friends: Mapped[List["Friend"]] = relationship(
             back_populates="who_added_user",
             foreign_keys=Friend.who_added_user_login)
+    reacts: Mapped[List["Like"]] = relationship()
                                                    
 
     def to_read_model(self) -> UserSchema:
