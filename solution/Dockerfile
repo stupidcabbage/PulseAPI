@@ -9,4 +9,4 @@ COPY . .
 
 ENV SERVER_PORT=8000
 
-CMD ["sh" , "-c", "exec alembic upgrade head && exec python -m uvicorn src.main:app --reload"]
+CMD ["sh" , "-c", "alembic upgrade head && python -m uvicorn src.main:app --reload"]
